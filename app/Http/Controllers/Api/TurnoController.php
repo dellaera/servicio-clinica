@@ -8,6 +8,18 @@ use App\Http\Requests\UpdateTurnoRequest;
 use App\Models\Turno;
 use Illuminate\Http\Response;
 
+/* |---- Controlador: TurnoController |----|
+Este controlador se encarga de recibir las peticiones HTTP relacionadas con los turnos (GET, POST, PUT, DELETE).
+Su rol principal en la arquitectura en capas: - Recibe la solicitud. - Llama al servicio correspondiente
+(en este caso, aún llamamos al modelo directamente, pero más adelante lo refactorizaremos para usar TurnoService y TurnoRepository).
+- Devuelve la respuesta JSON al cliente. Buenas prácticas:- No incluir lógica de negocio aquí; eso debe ir en los servicios.
+- Validar datos mediante Form Requests antes de procesarlos.
+index() → Muestra lista paginada de turnos con datos del paciente.
+store() → Crea un nuevo turno con los datos validados.
+show($id) → Muestra un turno específico con datos del paciente.
+update($request, $id) → Actualiza un turno existente con datos validados.
+destroy($id) → Elimina un turno por ID.*/
+
 class TurnoController extends Controller
 {
     public function index()

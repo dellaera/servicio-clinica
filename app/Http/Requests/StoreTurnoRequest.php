@@ -6,6 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 use App\Models\Turno;
 
+/* |----| Form Request: StoreTurnoRequest |----|
+Este archivo valida los datos cuando se crea un nuevo turno. Su función es asegurarse de que todos los campos requeridos existan
+y tengan el formato correcto antes de intentar guardar el turno. Ejemplo: un paciente debe existir antes de asignarle un turno.
+En la arquitectura en capas: Pertenece a la capa de Presentación (junto al controlador). | - Protege la aplicación de datos inválidos o maliciosos.
+Define las reglas de validación para crear un turno.*/
+
 class StoreTurnoRequest extends FormRequest
 {
     public function authorize(): bool

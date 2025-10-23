@@ -5,6 +5,10 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Turno;
 
+/* |----| Form Request: UpdateTurnoRequest |----|
+Este archivo valida los datos cuando se actualiza un turno existente. A diferencia del StoreTurnoRequest, los campos no son todos obligatorios;
+solo se validan los que vienen en la petición. Esto permite modificar parcialmente un turno (por ejemplo, solo la fecha o la hora).*/
+
 class UpdateTurnoRequest extends FormRequest
 {
     public function authorize(): bool
