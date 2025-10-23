@@ -21,10 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::apiResource('pacientes', PacienteController::class);
-});
-
-Route::prefix('v1')->group(function () {
-    Route::apiResource('pacientes', PacienteController::class);
     Route::apiResource('turnos', TurnoController::class);
 });
 
