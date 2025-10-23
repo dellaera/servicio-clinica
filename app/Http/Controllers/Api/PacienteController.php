@@ -15,20 +15,10 @@ class PacienteController extends Controller
         return response()->json($pacientes);
     }
 
-    public function store(Request $request)
+    public function store(PacienteRequest $request)
     {
-        $datos = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'dni' => 'nullable|string|max:50|unique:pacientes,dni',
-            'fecha_nacimiento' => 'nullable|date',
-            'telefono' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string',
-        ]);
-
-        $paciente = Paciente::create($datos);
-        return response()->json($paciente, Response::HTTP_CREATED);
+        $paciente = Paciente::create($request->validated());
+        return response()->json($paciente, 201);
     }
 
     public function show($id)
@@ -37,21 +27,10 @@ class PacienteController extends Controller
         return response()->json($paciente);
     }
 
-    public function update(Request $request, $id)
+    public function update(PacienteRequest $request, $id)
     {
         $paciente = Paciente::findOrFail($id);
-
-        $datos = $request->validate([
-            'nombre' => 'sometimes|required|string|max:255',
-            'apellido' => 'sometimes|required|string|max:255',
-            'dni' => 'nullable|string|max:50|unique:pacientes,dni,' . $paciente->id,
-            'fecha_nacimiento' => 'nullable|date',
-            'telefono' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string',
-        ]);
-
-        $paciente->update($datos);
+        $paciente->update($request->validated());
         return response()->json($paciente);
     }
 
