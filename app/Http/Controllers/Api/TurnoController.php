@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTurnoRequest;
+use App\Http\Requests\UpdateTurnoRequest;
 use App\Models\Turno;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class TurnoController extends Controller
@@ -15,17 +16,9 @@ class TurnoController extends Controller
         return response()->json($turnos);
     }
 
-    public function store(Request $request)
+    public function store(StoreTurnoRequest $request)
     {
-        $datos = $request->validate([
-            'paciente_id' => 'required|exists:pacientes,id',
-            'fecha' => 'required|date',
-            'hora' => 'required',
-            'tipo' => 'nullable|string|max:255',
-            'notas' => 'nullable|string',
-        ]);
-
-        $turno = Turno::create($datos);
+        $turno = Turno::create($request->validated());
         return response()->json($turno, Response::HTTP_CREATED);
     }
 
@@ -35,19 +28,10 @@ class TurnoController extends Controller
         return response()->json($turno);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateTurnoRequest $request, $id)
     {
         $turno = Turno::findOrFail($id);
-
-        $datos = $request->validate([
-            'paciente_id' => 'sometimes|required|exists:pacientes,id',
-            'fecha' => 'sometimes|required|date',
-            'hora' => 'sometimes|required',
-            'tipo' => 'nullable|string|max:255',
-            'notas' => 'nullable|string',
-        ]);
-
-        $turno->update($datos);
+        $turno->update($request->validated());
         return response()->json($turno);
     }
 
