@@ -5,53 +5,62 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTurnoRequest;
 use App\Http\Requests\UpdateTurnoRequest;
-use App\Models\Turno;
+use App\Services\TurnoService;
 use Illuminate\Http\Response;
 
-/* |---- Controlador: TurnoController |----|
+/*
+|---- Controlador: TurnoController |----|
 Este controlador se encarga de recibir las peticiones HTTP relacionadas con los turnos (GET, POST, PUT, DELETE).
-Su rol principal en la arquitectura en capas: - Recibe la solicitud. - Llama al servicio correspondiente
-(en este caso, aún llamamos al modelo directamente, pero más adelante lo refactorizaremos para usar TurnoService y TurnoRepository).
-- Devuelve la respuesta JSON al cliente. Buenas prácticas:- No incluir lógica de negocio aquí; eso debe ir en los servicios.
-- Validar datos mediante Form Requests antes de procesarlos.
-index() → Muestra lista paginada de turnos con datos del paciente.
-store() → Crea un nuevo turno con los datos validados.
-show($id) → Muestra un turno específico con datos del paciente.
-update($request, $id) → Actualiza un turno existente con datos validados.
-destroy($id) → Elimina un turno por ID.*/
+Su función principal:
+- Recibir la solicitud HTTP.
+- Llamar al TurnoService para que gestione la lógica de negocio.
+- Devolver la respuesta JSON al cliente.
+
+Buenas prácticas:
+- No incluir lógica de negocio aquí; eso se hace en el servicio.
+- Validar los datos mediante Form Requests.
+*/
 
 class TurnoController extends Controller
 {
-    public function index()
+    protected $turnoService;
+
+    public function __construct(TurnoService $turnoService)
     {
-        $turnos = Turno::with('paciente')->orderBy('fecha', 'desc')->paginate(10);
-        return response()->json($turnos);
+        $this->turnoService = $turnoService;
     }
 
+    // Listar todos los turnos
+    public function index()
+    {
+        return response()->json($this->turnoService->listarTurnos());
+    }
+
+    // Crear un nuevo turno
     public function store(StoreTurnoRequest $request)
     {
-        $turno = Turno::create($request->validated());
+        $turno = $this->turnoService->crearTurno($request->validated());
         return response()->json($turno, Response::HTTP_CREATED);
     }
 
+    // Mostrar un turno específico
     public function show($id)
     {
-        $turno = Turno::with('paciente')->findOrFail($id);
+        $turno = $this->turnoService->obtenerTurnoPorId($id);
         return response()->json($turno);
     }
 
+    // Actualizar un turno existente
     public function update(UpdateTurnoRequest $request, $id)
     {
-        $turno = Turno::findOrFail($id);
-        $turno->update($request->validated());
+        $turno = $this->turnoService->actualizarTurno($id, $request->validated());
         return response()->json($turno);
     }
 
+    // Eliminar un turno
     public function destroy($id)
     {
-        $turno = Turno::findOrFail($id);
-        $turno->delete();
-
+        $this->turnoService->eliminarTurno($id);
         return response()->json(['mensaje' => 'Turno eliminado correctamente']);
     }
 }

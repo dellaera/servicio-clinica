@@ -10,10 +10,8 @@ Este servicio contiene la lógica de negocio de los turnos. Por ejemplo: verific
 Su rol en la arquitectura en capas: Recibe solicitudes desde el controlador. - Llama al repositorio para interactuar con la base de datos.
 - Puede aplicar reglas de negocio (validaciones extra, notificaciones, etc.) | | Ventaja: | - Mantiene el controlador limpio y enfocado en la interacción HTTP.
 listarTurnos($cantidad) → Devuelve todos los turnos paginados.
-crearTurno($datos) → Crea un turno aplicando reglas de negocio (no duplicados por paciente, fecha y hora).
-obtenerTurnoPorId($id) → Busca un turno por ID.
-actualizarTurno($turno, $datos) → Actualiza un turno existente.
-eliminarTurno($turno) → Elimina un turno*/
+Se comunica con TurnoRepository para interactuar con la base de datos.
+- Permite mantener los controladores limpios.*/
 
 class TurnoService
 {
@@ -24,9 +22,9 @@ class TurnoService
         $this->turnoRepository = $turnoRepository;
     }
 
+    // Crear un turno aplicando reglas de negocio
     public function crearTurno(array $datos)
     {
-        // Regla de negocio: un paciente no puede tener dos turnos el mismo día a la misma hora
         $turnos = $this->turnoRepository->obtenerTodos();
 
         $existe = $turnos->first(function ($turno) use ($datos) {
@@ -42,11 +40,26 @@ class TurnoService
         return $this->turnoRepository->crear($datos);
     }
 
+    // Listar todos los turnos
     public function listarTurnos()
     {
         return $this->turnoRepository->obtenerTodos();
     }
 
+    // Obtener un turno por ID
+    public function obtenerTurnoPorId($id)
+    {
+        return $this->turnoRepository->obtenerPorId($id);
+    }
+
+    // Actualizar un turno
+    public function actualizarTurno($id, array $datos)
+    {
+        $turno = $this->turnoRepository->obtenerPorId($id);
+        return $turno->update($datos) ? $turno : null;
+    }
+
+    // Eliminar un turno
     public function eliminarTurno($id)
     {
         return $this->turnoRepository->eliminar($id);
