@@ -15,12 +15,15 @@ use App\Http\Controllers\Api\TurnoController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-});
+});*/
 
 Route::prefix('v1')->group(function () {
     Route::apiResource('pacientes', PacienteController::class);
     Route::apiResource('turnos', TurnoController::class);
 });
 
+Route::get('/prueba', function() {
+    return response()->json(['ok' => true]);
+});
